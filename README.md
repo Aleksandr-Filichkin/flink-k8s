@@ -1,6 +1,10 @@
 # afilichkin/flink-k8s-with-submit-job: Flink Docker image that includes submit job(fat jar) step.
-Flink image for Kubernetes that fixes Jobmanage connection issue and can submit job for Jobmanager 
-https://issues.apache.org/jira/browse/FLINK-9937
+
+We have two K8s deployment:JobManager (JM) and TaskManager (TM)
+
+When we start JM docker we also submit the FLink job.
+
+Flink job is one for Flink cluster. 
 
 You can use afilichkin/flink-k8s-with-submit-job in jobmanager-deployment.yaml file
 
