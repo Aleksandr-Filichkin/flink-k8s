@@ -36,12 +36,20 @@ if [ "$1" = "help" ]; then
     exit 0
 elif [ "$1" = "jobmanager" ]; then
     echo "Starting Job Manager Custom"
-    echo " 127.0.0.1 ${JOB_MANAGER_RPC_ADDRESS}" >> /etc/hosts
     sed -i -e "s/jobmanager.rpc.address: localhost/jobmanager.rpc.address: ${JOB_MANAGER_RPC_ADDRESS}/g" "$FLINK_HOME/conf/flink-conf.yaml"
     echo "blob.server.port: 6124" >> "$FLINK_HOME/conf/flink-conf.yaml"
     echo "query.server.port: 6125" >> "$FLINK_HOME/conf/flink-conf.yaml"
 
     echo "config file: " && grep '^[^\n#]' "$FLINK_HOME/conf/flink-conf.yaml"
+   
+   #Customization start
+    
+    #fix for https://issues.apache.org/jira/browse/FLINK-9937
+    echo " 127.0.0.1 ${JOB_MANAGER_RPC_ADDRESS}" >> /etc/hosts
+   
+    echo "Submit flink job in background"
+    exec   /submit-flink-job.sh &
+   #Customization end
 
     exec $(drop_privs_cmd) flink "$FLINK_HOME/bin/jobmanager.sh" start-foreground cluster
 

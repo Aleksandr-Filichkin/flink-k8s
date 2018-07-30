@@ -12,13 +12,7 @@ spec:
     spec:
       containers:
       - name: jobmanager
-        image: afilichkin/flink-k8s-v2
-        readinessProbe:
-          exec:
-            command:
-             - /bin/sh
-             - /k8s.sh
-          initialDelaySeconds: 60
+        image: afilichkin/flink-k8s-with-submit-job
         args:
         - jobmanager
         ports:

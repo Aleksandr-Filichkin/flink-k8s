@@ -19,6 +19,6 @@
 ###############################################################################
 
 # If unspecified, the hostname of the container is taken as the JobManager address
-exec ./submit-job.sh &
+exec flink run /app.jar > /app.out &
 
 exit 0
