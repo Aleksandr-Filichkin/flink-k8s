@@ -1,14 +1,47 @@
-# afilichkin/flink-k8s-with-submit-job: Flink Docker image that includes submit job(fat jar) step.
+# Flink on Kubernetes.
 
-We have two K8s deployment:JobManager (JM) and TaskManager (TM)
+**Flink achitecture**
 
-When we start JM docker we also submit the FLink job.
 
-Flink job is one for Flink cluster. 
+<ul>
+  <li>One active JobManager(JM) </li>
+  <li>Several TaskManagers(TM)</li>
+</ul>
 
-You can use afilichkin/flink-k8s-with-submit-job in jobmanager-deployment.yaml file
+**One job per cluster**
+<ul>
+  <li>Evolving job deployment philosophy</li>
+  <li>Tie cluster lifecycle to job lifecycle)</li>
+  <li>Ideally, the job is first-class.<br>
+  (think about running a job on a platform like Kubernetes, 
+  not a running Flink cluster first then submitting the job)</li> 
+</ul>
 
-docker-entrypoint-custom.sh has only one change:
+**Flink-on-K8s**
+
+<ul>
+  <li>JobManager Deployment(jobmanager-deployment.yaml)
+  <ul>
+    <li>maintain 1 replica of Flink container running as a JM </li>
+    <li>apply a label like "flink-jobmanager"</li>
+    <li>Jobmanager uses custom Flink Docker image "afilichkin/flink-k8s-with-submit-job" , it start JM and also submit the "app.jar"
+  </ul>
+  </li>
+  <li>JM service(jobmanager-service.yaml)
+  <ul>
+      <li>make JobManager accessiable by a hostname & port</li>
+      <li>select pods with labebl "flink-jobmanager"</li>
+    </ul>
+    </li>
+    
+  <li>TaskManager Deployment(taskmanager-deployment.yaml)
+    <ul>
+      <li>maintain n replica of Flink container running as a TM </li>
+    </ul>
+  </li>    
+</ul>
+
+**custom Flink Docker image "afilichkin/flink-k8s-with-submit-job" has only one change in "docker-entrypoint-custom.sh":**
 
     
     #Customization start
@@ -18,6 +51,10 @@ docker-entrypoint-custom.sh has only one change:
     echo "Submit flink job in background"
     exec   /submit-flink-job.sh &
     #Customization end
+
+
+# Main flow
+![alt text](flow.jpg)
 
 
 # flink-k8s: Flink image that can work with Kubernetes.
