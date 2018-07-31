@@ -54,7 +54,7 @@
 
 
 # Main flow
-![alt text](flow.jpg)
+<img src="flow.jpg" width=800/>
 
 
 # flink-k8s: Flink image that can work with Kubernetes.
